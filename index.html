@@ -896,3 +896,114 @@
       </a>
     </div>
   </footer>
+  <script>
+    // ── Burger menu ──
+    const burger = document.getElementById('burger'), mob = document.getElementById('mob-nav');
+    let mo = false;
+    burger.addEventListener('click', () => {
+      mo = !mo; mob.classList.toggle('open', mo);
+      const s = burger.querySelectorAll('span');
+      s[0].style.transform = mo ? 'rotate(45deg) translate(5px,5px)' : '';
+      s[1].style.opacity = mo ? '0' : '1';
+      s[2].style.transform = mo ? 'rotate(-45deg) translate(5px,-5px)' : '';
+    });
+    document.querySelectorAll('.mob-l').forEach(l => l.addEventListener('click', () => {
+      mo = false; mob.classList.remove('open');
+      burger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+    }));
+
+    // ── Menu tabs ──
+    document.querySelectorAll('.mtab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.mtab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.menu-cat').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('cat-' + tab.dataset.cat).classList.add('active');
+        document.getElementById('meny').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // ── Smooth anchor scroll ──
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+
+    // ── Ingredient word map for menu translations ──
+    const INGR = {
+      no: ['tomatsaus','ost','skinke','pepperoni','løk','kjøttdeig','ananas','biff','bacon','champignon','hvitløksdressing','hvitløkssaus','bearnaisesaus','bernaisesaus','salat','chips','kylling','ris','karrisaus','fløtesaus','peppersaus','pitabrød','oksekjøtt','agurk','tomat','tzatsiki','marinert','kyllingfilet','indrefilet','grønnsaker','paprika','fritystekt','innbakt','sei','remulade','feta','gorgonzola','jalapeños','ruccola','majonessaus','lakssaus','sitron','reker','kveite','chili','hvitløk','persille','topping'],
+      en: ['tomato sauce','cheese','ham','pepperoni','onion','ground meat','pineapple','beef','bacon','mushrooms','garlic dressing','garlic sauce','béarnaise sauce','béarnaise sauce','salad','chips','chicken','rice','curry sauce','cream sauce','pepper sauce','pita bread','beef','cucumber','tomato','tzatziki','marinated','chicken breast','tenderloin','vegetables','bell pepper','deep-fried','breaded','pollock','remoulade','feta','gorgonzola','jalapeños','arugula','mayo sauce','salmon sauce','lemon','shrimp','halibut','chili','garlic','parsley','topping'],
+      de: ['Tomatensauce','Käse','Schinken','Peperoni','Zwiebeln','Hackfleisch','Ananas','Rindfleisch','Speck','Champignons','Knoblauchdressing','Knoblauchsauce','Béarnaisesauce','Béarnaisesauce','Salat','Pommes','Hähnchen','Reis','Currysauce','Rahmsoße','Pfeffersauce','Pitabrot','Rindfleisch','Gurke','Tomate','Tzatziki','mariniert','Hähnchenfilet','Rinderfilet','Gemüse','Paprika','frittiert','paniert','Seelachs','Remoulade','Feta','Gorgonzola','Jalapeños','Rucola','Mayonnaisesoße','Lachssoße','Zitrone','Garnelen','Heilbutt','Chili','Knoblauch','Petersilie','Topping'],
+    };
+
+    const CAT_TRANS = {
+      en: {
+        'Kjøttretter':'Meat Dishes','Grillretter og kjøttspesialiteter fra grillen':'Grilled meats and specialities',
+        'Kebab':'Kebab','Kebabtallerken, pita og rullekebab':'Kebab plates, pita and wraps',
+        'Hamburger':'Burgers','Tallerken tillegg: Serveres med chips +49,-':'Add plate with chips +49,-',
+        'Pasta':'Pasta','Italiensk pasta og spaghetti':'Italian pasta dishes',
+        'Salat':'Salads','Ferske salater':'Fresh salads',
+        'Innbaktpizza':'Calzone','Sprø innbakt pizza':'Crispy calzone',
+        'Småretter':'Sides','Tilbehør og småretter':'Sides and small dishes',
+        'Barnemeny':'Kids Menu','For de minste':'For the little ones',
+        'Drikke':'Drinks','Brus, juice og vann':'Soft drinks, juice and water',
+        'Pizza':'Pizza','Klassisk steinovnpizza med friske råvarer':'Classic stone-oven pizza with fresh ingredients',
+        'Ekstra ost':'Extra cheese','Saus':'Sauce','Glutenfri pizza':'Gluten-free pizza',
+      },
+      de: {
+        'Kjøttretter':'Fleischgerichte','Grillretter og kjøttspesialiteter fra grillen':'Grillspezialitäten vom Grill',
+        'Kebab':'Kebab','Kebabtallerken, pita og rullekebab':'Kebab-Teller, Pita und Wraps',
+        'Hamburger':'Hamburger','Tallerken tillegg: Serveres med chips +49,-':'Mit Pommes +49,-',
+        'Pasta':'Pasta','Italiensk pasta og spaghetti':'Italienische Pasta',
+        'Salat':'Salate','Ferske salater':'Frische Salate',
+        'Innbaktpizza':'Calzone','Sprø innbakt pizza':'Knuspriger Calzone',
+        'Småretter':'Beilagen','Tilbehør og småretter':'Beilagen und kleine Gerichte',
+        'Barnemeny':'Kinderspeisekarte','For de minste':'Für die Kleinen',
+        'Drikke':'Getränke','Brus, juice og vann':'Softdrinks, Saft und Wasser',
+        'Pizza':'Pizza','Klassisk steinovnpizza med friske råvarer':'Klassische Steinofenpizza mit frischen Zutaten',
+        'Ekstra ost':'Extra Käse','Saus':'Soße','Glutenfri pizza':'Glutenfreie Pizza',
+      }
+    };
+
+    function translateDesc(text, lang) {
+      if (lang === 'no') return text;
+      let out = text.toLowerCase();
+      INGR.no.forEach((w, i) => {
+        out = out.replace(new RegExp('\\b' + w + '\\b', 'gi'), '§§§' + i + '§§§');
+      });
+      out = out.replace(/§§§(\d+)§§§/g, (_, i) => INGR[lang][parseInt(i)] || INGR.no[parseInt(i)]);
+      return out.charAt(0).toUpperCase() + out.slice(1);
+    }
+
+    function setLang(lang) {
+      // Translate all [data-no] span/element text content
+      document.querySelectorAll('[data-no]').forEach(el => {
+        const val = el.dataset[lang] || el.dataset.no;
+        if (val !== undefined) el.textContent = val;
+      });
+      // Translate .mi-desc ingredient text
+      document.querySelectorAll('.mi-desc').forEach(el => {
+        if (!el.dataset.no) el.dataset.no = el.textContent.trim();
+        el.textContent = translateDesc(el.dataset.no, lang);
+      });
+      // Translate .cat-name and .cat-desc
+      document.querySelectorAll('.cat-name, .cat-desc, .extra-name').forEach(el => {
+        if (!el.dataset.no) el.dataset.no = el.textContent.trim();
+        el.textContent = (CAT_TRANS[lang] && CAT_TRANS[lang][el.dataset.no]) || el.dataset.no;
+      });
+      // Update active button
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+      document.documentElement.lang = lang;
+      localStorage.setItem('vpg-lang', lang);
+    }
+
+    // Restore saved language on load
+    const savedLang = localStorage.getItem('vpg-lang');
+    if (savedLang && savedLang !== 'no') setTimeout(() => setLang(savedLang), 80);
+  </script>
+</body>
+</html>
