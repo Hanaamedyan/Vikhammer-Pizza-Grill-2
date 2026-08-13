@@ -904,6 +904,7 @@
     burger.addEventListener('click', () => {
       menuOpen = !menuOpen;
       mobNav.classList.toggle('open', menuOpen);
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
       const s = burger.querySelectorAll('span');
       s[0].style.transform = menuOpen ? 'rotate(45deg) translate(5px,5px)' : '';
       s[1].style.opacity = menuOpen ? '0' : '1';
@@ -912,6 +913,7 @@
     document.querySelectorAll('.mob-l').forEach(l => l.addEventListener('click', () => {
       menuOpen = false;
       mobNav.classList.remove('open');
+      document.body.style.overflow = '';
       burger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
     }));
 
